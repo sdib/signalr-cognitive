@@ -1,7 +1,8 @@
 import React from 'react';
-import "./Speaker.css";
 import { Translator, TranslatorOptions } from './Translator';
 import { TranslationRecognitionResult } from 'microsoft-cognitiveservices-speech-sdk';
+import { sendTranslations } from './TranslationsProvider';
+import TextDisplay from './TextDisplay';
 
 interface SpeakerState {
     text: string
@@ -14,7 +15,7 @@ interface SpeakerProps {
     toLanguages: Array<string>
 }
 
-export default class SpeechToText extends React.Component<SpeakerProps, SpeakerState> {
+export default class Speaker extends React.Component<SpeakerProps, SpeakerState> {
 
     translator!: Translator;
     state: SpeakerState;
@@ -24,21 +25,18 @@ export default class SpeechToText extends React.Component<SpeakerProps, SpeakerS
         this.state = { text: "" };
     }
 
-    render() {
-        return <p className="Speaker-translation">{this.state.text}</p>
-    }
+    render = () => <TextDisplay text={this.state.text} />
 
-    componentWillUnmount() {
-        this.translator.stop();
-    }
+    componentWillUnmount = () => this.translator.stop();
 
-    componentDidMount() {
+    componentDidMount = () => {
         const options: TranslatorOptions = { ...this.props, key: this.props.subscriptionKey };
         this.translator = new Translator(options, this.onSpeechRecognized.bind(this));
         this.translator.start();
     }
 
-    onSpeechRecognized(result: TranslationRecognitionResult): void {
+    onSpeechRecognized = (result: TranslationRecognitionResult): void => {
         this.setState({ text: result.text });
+        sendTranslations(result.translations);
     }
 }
