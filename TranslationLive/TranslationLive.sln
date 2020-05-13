@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationHubFunctionApp", "TranslationHubFunctionApp\TranslationHubFunctionApp.csproj", "{FB247349-C4CB-4292-BBA5-33EC5CD14735}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FB247349-C4CB-4292-BBA5-33EC5CD14735}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB247349-C4CB-4292-BBA5-33EC5CD14735}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB247349-C4CB-4292-BBA5-33EC5CD14735}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB247349-C4CB-4292-BBA5-33EC5CD14735}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6581C590-6AC2-43DC-AD64-AB2FC70741E8}
+	EndGlobalSection
+EndGlobal
