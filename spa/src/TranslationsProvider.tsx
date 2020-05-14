@@ -1,5 +1,5 @@
 import { Translations } from "microsoft-cognitiveservices-speech-sdk";
-import Languages from "./Languages";
+import { Languages } from "./LanguageSelector";
 
 export const sendTranslations = (translations: Translations) => {
     const payload: { [index: string]: string } = {};

@@ -4,7 +4,6 @@ import './App.css';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import Speaker from './Speaker';
 import Audience from './Audience';
-import Languages from './Languages';
 
 function App() {
   return (
@@ -15,7 +14,6 @@ function App() {
           <Route path="/host">
             <Speaker subscriptionKey={process.env.REACT_APP_CS_KEY!}
               fromLanguage="fr-FR"
-              toLanguages={Languages}
               region={process.env.REACT_APP_CS_REGION!} />
           </Route>
           <Route path="/audience">

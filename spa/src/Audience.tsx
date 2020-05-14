@@ -1,7 +1,7 @@
 import React from 'react';
 import TextDisplay from './TextDisplay';
 import * as signalR from '@microsoft/signalr'
-import Languages from './Languages';
+import { LanguageSelector, DefaultLanguage } from './LanguageSelector';
 
 interface AudienceState {
     text: string
@@ -14,17 +14,15 @@ export default class Audience extends React.Component<{}, AudienceState> {
 
     constructor(props: {}) {
         super(props);
-        this.handleNewTranslation.bind(this)
-        this.updateHubSubscription.bind(this)
+        this.handleNewTranslation.bind(this);
+        this.updateHubSubscription.bind(this);
 
-        this.state = { selectedLanguage: Languages[0], text: "" }
+        this.state = { selectedLanguage: DefaultLanguage, text: "" };
     }
 
     render = () => (
         <div>
-            <select value={this.state.selectedLanguage} onChange={this.onLanguageUpdated}>
-                {Languages.map(language => <option key={language} value={language}>{language}</option>)}
-            </select>
+            <LanguageSelector onLanguageUpdated={this.onLanguageUpdated} value={this.state.selectedLanguage} />
             <TextDisplay text={this.state.text} />
         </div>
     );

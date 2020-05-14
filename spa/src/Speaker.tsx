@@ -3,6 +3,7 @@ import { Translator, TranslatorOptions } from './Translator';
 import { TranslationRecognitionResult } from 'microsoft-cognitiveservices-speech-sdk';
 import { sendTranslations } from './TranslationsProvider';
 import TextDisplay from './TextDisplay';
+import { Languages } from './LanguageSelector';
 
 interface SpeakerState {
     text: string
@@ -12,7 +13,6 @@ interface SpeakerProps {
     fromLanguage: string
     subscriptionKey: string
     region: string
-    toLanguages: Array<string>
 }
 
 export default class Speaker extends React.Component<SpeakerProps, SpeakerState> {
@@ -30,7 +30,7 @@ export default class Speaker extends React.Component<SpeakerProps, SpeakerState>
     componentWillUnmount = () => this.translator.stop();
 
     componentDidMount = () => {
-        const options: TranslatorOptions = { ...this.props, key: this.props.subscriptionKey };
+        const options: TranslatorOptions = { ...this.props, toLanguages: Languages, key: this.props.subscriptionKey };
         this.translator = new Translator(options, this.onSpeechRecognized.bind(this));
         this.translator.start();
     }
