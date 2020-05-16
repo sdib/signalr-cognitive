@@ -2,6 +2,7 @@ import React from 'react';
 import TextDisplay from './TextDisplay';
 import * as signalR from '@microsoft/signalr'
 import { LanguageSelector, DefaultLanguage } from './LanguageSelector';
+import AppConfig from './AppConfig';
 
 interface AudienceState {
     text: string
@@ -29,7 +30,7 @@ export default class Audience extends React.Component<{}, AudienceState> {
 
     componentDidMount = () => {
         this.connection = new signalR.HubConnectionBuilder()
-            .withUrl(process.env.REACT_APP_API!)
+            .withUrl(AppConfig.API)
             .build();
 
         this.connection.start();

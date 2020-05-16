@@ -1,5 +1,6 @@
 import { Translations } from "microsoft-cognitiveservices-speech-sdk";
 import { Languages } from "./LanguageSelector";
+import AppConfig from "./AppConfig";
 
 export const sendTranslations = (translations: Translations) => {
     const payload: { [index: string]: string } = {};
@@ -9,6 +10,6 @@ export const sendTranslations = (translations: Translations) => {
         body: JSON.stringify(payload),
     };
 
-    fetch("http://localhost:7071/api/translations", requestOptions)
+    fetch(AppConfig.TRANSLATIONS_API, requestOptions)
         .then(((r) => console.log("transmitted translations")), (err) => console.log(`failed to send translations: ${err}`));
 }
