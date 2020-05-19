@@ -1,15 +1,20 @@
 import React from 'react';
+import Languages, { Language } from './Languages';
 
-export const Languages = ["it", "nl", "fr", "en"];
 export const DefaultLanguage = Languages[0];
 
 export interface LanguageSelectorProps {
     value: string;
+    valuePropName: keyof Language;
+    label: string;
     onLanguageUpdated: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
 export const LanguageSelector = (props: LanguageSelectorProps) => (
-    <select value={props.value} onChange={props.onLanguageUpdated}>
-        {Languages.map(language => <option key={language} value={language}>{language}</option>)}
-    </select>
+    <div>
+        <label>{props.label} : </label>
+        <select value={props.value} onChange={props.onLanguageUpdated}>
+            {Languages.map(language => <option key={language.locale} value={language[props.valuePropName]}>{language.label}</option>)}
+        </select>
+    </div>
 );

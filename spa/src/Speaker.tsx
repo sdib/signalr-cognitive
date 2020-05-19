@@ -1,13 +1,9 @@
-import React from 'react';
-import { Translator, TranslatorOptions } from './Translator';
+import React, { useState, useEffect, useRef } from 'react';
+import { Translator } from './Translator';
 import { TranslationRecognitionResult } from 'microsoft-cognitiveservices-speech-sdk';
 import { sendTranslations } from './TranslationsProvider';
 import TextDisplay from './TextDisplay';
-import { Languages } from './LanguageSelector';
-
-interface SpeakerState {
-    text: string
-}
+import Languages from './Languages';
 
 interface SpeakerProps {
     fromLanguage: string
@@ -15,28 +11,31 @@ interface SpeakerProps {
     region: string
 }
 
-export default class Speaker extends React.Component<SpeakerProps, SpeakerState> {
+const Speaker = (props: SpeakerProps) => {
 
-    translator!: Translator;
-    state: SpeakerState;
+    const [text, setText] = useState('');
 
-    constructor(props: any) {
-        super(props);
-        this.state = { text: "" };
-    }
+    const handleNewTranslation = useRef((translationRecognitionResult: TranslationRecognitionResult) => {
+        setText(translationRecognitionResult.text)
+        sendTranslations(translationRecognitionResult.translations)
+    })
 
-    render = () => <TextDisplay text={this.state.text} />
+    useEffect(() => {
+        const translatorOptions = {
+            ...props,
+            key: props.subscriptionKey,
+            toLanguages: Languages.map(l => l.languageCode)
+        };
+        const translator = new Translator(translatorOptions, handleNewTranslation.current)
+        translator.start();
+        return () => {
+            translator.stop();
+        }
+    }, [props])
 
-    componentWillUnmount = () => this.translator.stop();
-
-    componentDidMount = () => {
-        const options: TranslatorOptions = { ...this.props, toLanguages: Languages, key: this.props.subscriptionKey };
-        this.translator = new Translator(options, this.onSpeechRecognized.bind(this));
-        this.translator.start();
-    }
-
-    onSpeechRecognized = (result: TranslationRecognitionResult): void => {
-        this.setState({ text: result.text });
-        sendTranslations(result.translations);
-    }
+    return (
+        <TextDisplay text={text} />
+    )
 }
+
+export default Speaker;

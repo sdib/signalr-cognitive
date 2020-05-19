@@ -1,61 +1,44 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import TextDisplay from './TextDisplay';
 import * as signalR from '@microsoft/signalr'
 import { LanguageSelector, DefaultLanguage } from './LanguageSelector';
 import AppConfig from './AppConfig';
 
-interface AudienceState {
-    text: string
-    selectedLanguage: string
-}
+const Audience = () => {
+    const [selectedLanguage, setSelectedLanguage] = useState(DefaultLanguage.languageCode);
+    const [translation, setTranslation] = useState('');
 
-export default class Audience extends React.Component<{}, AudienceState> {
+    const connection = useRef(new signalR.HubConnectionBuilder()
+        .withUrl(AppConfig.API)
+        .build())
 
-    connection: signalR.HubConnection;
+    const handleNewTranslation = useRef((newTranslation: string) => {
+        setTranslation(newTranslation)
+    })
 
-    constructor(props: {}) {
-        super(props);
-        this.handleNewTranslation.bind(this);
-        this.updateHubSubscription.bind(this);
-
-        this.state = { selectedLanguage: DefaultLanguage, text: "" };
-    }
-
-    render = () => (
-        <div>
-            <LanguageSelector onLanguageUpdated={this.onLanguageUpdated} value={this.state.selectedLanguage} />
-            <TextDisplay text={this.state.text} />
-        </div>
-    );
-
-    componentDidMount = () => {
-        this.connection = new signalR.HubConnectionBuilder()
-            .withUrl(AppConfig.API)
-            .build();
-
-        this.connection.start();
-        this.updateHubSubscription(this.state.selectedLanguage);
-    }
-
-    onLanguageUpdated = (e: React.FormEvent<HTMLSelectElement>) => {
-        const newLanguage = e.currentTarget.value;
-        this.updateHubSubscription(newLanguage, this.state.selectedLanguage)
-        this.setState({
-            selectedLanguage: newLanguage
-        });
-    }
-
-    updateHubSubscription = (currentSubName: string, previousSubName?: string) => {
-        if (previousSubName !== undefined) {
-            this.connection.off(previousSubName, this.handleNewTranslation)
+    useEffect(() => {
+        connection.current.start();
+        const cleanupConnection = connection.current;
+        return () => {
+            cleanupConnection.stop();
         }
-        this.connection.on(currentSubName, this.handleNewTranslation);
+    }, [connection])
+
+    useEffect(() => {
+        connection.current.on(selectedLanguage, handleNewTranslation.current)
+    }, [selectedLanguage])
+
+    const onLanguageUpdated = (e: React.FormEvent<HTMLSelectElement>) => {
+        connection.current.off(selectedLanguage, handleNewTranslation.current)
+        setSelectedLanguage(e.currentTarget.value)
     }
 
-    handleNewTranslation = (translation: string) => {
-        this.setState({
-            ...this.state,
-            text: translation
-        });
-    }
+    return (
+        <div>
+            <LanguageSelector label="Attendee language" valuePropName="languageCode" onLanguageUpdated={onLanguageUpdated} value={selectedLanguage} />
+            <TextDisplay text={translation} />
+        </div>
+    )
 }
+
+export default Audience;
